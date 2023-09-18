@@ -1,2 +1,5 @@
 # Git.
 id: log | description: See repo logs.
+
+# Port.
+id: usage | description: Check ports usage.
