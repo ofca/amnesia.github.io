@@ -38,17 +38,33 @@ else
   if [ -z "$URL" ]; then
     # Ask for repository url if not defined.
     if [ ! -f "$CFG_DIR/url" ]; then
-      echo -ne "Provide repository URL\n$BLU:$NC "
-      read user_input
-      if ! [[ "$user_input" =~ ^http ]]; then
-        user_input="https://github.com/$user_input"
-        fi
-      echo "$user_input" > "$CFG_DIR/url"
+      ask_for_url
     fi
 
     URL=$(cat "$CFG_DIR/url")
   fi
 fi
+
+# Ask for URL and save it to file.
+#
+# @return void
+function ask_for_url() {
+  local url=""
+  if [ -f "$CFG_URL/url" ]; then
+    url=$(cat "$CFG_URL/url")
+    fi
+
+  echo -e "Current URL: $url"
+  echo -ne "Provide repository URL\n$BLU:$NC "
+  read user_input
+  if [[ -n "$user_input" ]]; then
+    if ! [[ "$user_input" =~ ^http ]]; then
+      user_input="https://github.com/$user_input"
+      fi
+    echo "$user_input" > "$CFG_DIR/url"
+    echo -e "${GRN}URL set.$NC"
+    fi;
+}
 
 # Fetch file from repository url.
 #
@@ -60,7 +76,7 @@ function fetch() {
   if [ "$LOCAL" == "1" ]; then
     cat "$URL/$path"
   else
-    curl -o - "$URL/$path"
+    curl -s -o - "$URL/$path"
     fi
 }
 
@@ -355,6 +371,10 @@ action=$1
 if [[ "$action" == ":refresh" ]]; then
   rm "$CFG_DIR/index"
   echo -e "${GRN}Index refreshed.$NC"
+  exit 0
+  fi
+if [[ "$action" == ":url" ]]; then
+  ask_for_url
   exit 0
   fi
 
