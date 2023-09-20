@@ -375,9 +375,25 @@ if [[ "$action" == ":url" ]]; then
   exit 0
   fi
 
+# @action
+# Try to execute script: amnesia group:script
+#
+# @action
+# Try to execute help for the script: amnesia group:script?
+if [[ "$action" =~ "\?$" ]]; then
+  help="1"
+  action=${action/\?//}
+else
+  help="0"
+  fi
+
 script_name="$(get_script_file_name "$action")"
 if [ -n "$script_name" ]; then
-  execute_script "$script_name" "${@:2}"
+  if [[ "$help" == "1" ]]; then
+    execute_script "$script_name" help
+  else
+    execute_script "$script_name" "${@:2}"
+    fi
   exit 0
   fi
 

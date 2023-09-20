@@ -5,7 +5,10 @@ set -eo pipefail
 action="$1"
 
 if [ "$action" == "help" ]; then
-  echo 'Print prettier git log.'
+  echo -e "\nPrint prettier git log.\n"
+  echo -e "Usage: $0 [arg]\n"
+  echo "<arg> (optional):"
+  echo "  help - Print help."
   exit 0
   fi
 
